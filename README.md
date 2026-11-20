@@ -1,5 +1,7 @@
 # [getmural.me](https://getmural.me)
 
+> **This fork runs Mural on the MKS DLC32 MAX board.** See [DLC32-MAX.md](DLC32-MAX.md) for wiring, driver setup, flashing and the remixed printed parts.
+
 Please find the main documentation on https://getmural.me. 
 
 Discord: https://discord.gg/J3ZautHMTw
