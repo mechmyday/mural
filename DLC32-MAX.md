@@ -21,15 +21,15 @@ Pin source: [MKS DLC32 MAX V1.0_002 PIN.pdf](https://github.com/makerbase-mks/MK
 | Left motor | **X** driver socket, X-Motor connector | STEP 16, DIR 15 |
 | Right motor | **Y** driver socket, Y1-Motor connector | STEP 7, DIR 6 |
 | Driver enable | shared | 8 |
-| OLED SDA | **Expansion header, TXD1** | 17 |
-| OLED SCL | **Expansion header, RXD1** | 18 |
+| OLED SDA | **Expansion header**, the pin on IO18 | 18 |
+| OLED SCL | **Expansion header**, the pin on IO17 | 17 |
 | OLED VCC / GND | Expansion header VCC / GND (see note below) | |
 | Servo signal | **A socket, STEP hole** | 20 |
 | Servo 5V / GND | 5V / GND pins of any endstop header (X-, Y-, Z-, Door…) | |
 | SD card | TF slot (SPI mode over the SDMMC wiring) | SCK 13, MISO 12, MOSI 14, CS 21 |
 
 - **Only plug drivers into the X and Y sockets.** The A socket's STEP hole is used as a plain GPIO for the servo, so a driver there would fight it. The Z socket is unused, so leave it empty as well.
-- The OLED uses the expansion header, which FluidNC sets up as UART1 (TXD1 = IO17, RXD1 = IO18). Mural doesn't use that UART, so the two pins act as I2C. If the header only has **5V**, check that your OLED module's SDA/SCL pull-ups go to its own 3.3V regulator, not to VCC. The ESP32-S3 pins aren't 5V tolerant. Most 0.91" modules are fine. If the header has 3.3V, use that.
+- The OLED uses the expansion header, which FluidNC sets up as UART1 (TXD1 = IO17, RXD1 = IO18). Mural doesn't use that UART, so the two pins act as I2C. On the test board SDA turned out to be IO18 and SCL IO17, the opposite of what the TX/RX labels suggest. If the screen stays blank, run the `i2cscan` env, which scans with SDA/SCL both ways round and shows which one finds the OLED (0x3C). If the header only has **5V**, check that your OLED module's SDA/SCL pull-ups go to its own 3.3V regulator, not to VCC. The ESP32-S3 pins aren't 5V tolerant. Most 0.91" modules are fine. If the header has 3.3V, use that.
 - Use plain male-female dupont wires into the socket holes. Socket layout follows the StepStick standard: the logic side has EN, MS1, MS2, MS3, RST, SLP, **STEP**, **DIR**, and the power side has VMOT, GND, 2B, 2A, 1A, 1B, **VDD**, **GND**. Check the silkscreen.
 - The servo pulls a few hundred mA when it stalls. If the board resets when the pen moves, power the servo from the PD trigger output through a small 5V buck instead of the endstop 5V pin.
 - All pins live in [`include/board.h`](include/board.h). Run the `pinfinder` env (below) if anything doesn't respond.

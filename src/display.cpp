@@ -9,8 +9,17 @@
 Display::Display() {
     auto i2c_valid = Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
     Serial.printf("I2C on SDA %d / SCL %d: %d\n", OLED_SDA_PIN, OLED_SCL_PIN, i2c_valid);
+    // The Adafruit begin() doesn't check for an ACK, so probe the bus first.
+    uint8_t addr = 0;
+    for (uint8_t a = 1; a < 127; a++) {
+        Wire.beginTransmission(a);
+        if (Wire.endTransmission() == 0) {
+            Serial.printf("I2C device at 0x%02X\n", a);
+            if (!addr && (a == 0x3C || a == 0x3D)) addr = a;
+        }
+    }
     display = new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-    if (!display->begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    if (!addr || !display->begin(SSD1306_SWITCHCAPVCC, addr)) {
         // Keep running without a screen rather than halting the bot.
         Serial.println(F("SSD1306 not found, continuing without display"));
         ready = false;

@@ -31,13 +31,14 @@ constexpr int SD_CS_PIN = 21;
 #define SERVO_PIN 20
 #endif
 
-// 0.91" SSD1306 OLED on the expansion header (FluidNC calls it uart1): SDA -> TXD1 (IO17),
-// SCL -> RXD1 (IO18). The UART isn't used, so both are plain GPIOs here.
+// 0.91" SSD1306 OLED on the expansion header (FluidNC calls it uart1, TX = IO17, RX = IO18).
+// The UART isn't used, so both are plain GPIOs here. Confirmed on hardware with tools/i2cscan:
+// SDA = IO18, SCL = IO17. The header's TX/RX labels may be from the other device's side.
 #ifndef OLED_SDA_PIN
-#define OLED_SDA_PIN 17
+#define OLED_SDA_PIN 18
 #endif
 #ifndef OLED_SCL_PIN
-#define OLED_SCL_PIN 18
+#define OLED_SCL_PIN 17
 #endif
 
 #endif
