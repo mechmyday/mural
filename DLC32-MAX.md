@@ -21,14 +21,15 @@ Pin source: [MKS DLC32 MAX V1.0_002 PIN.pdf](https://github.com/makerbase-mks/MK
 | Left motor | **X** driver socket, X-Motor connector | STEP 16, DIR 15 |
 | Right motor | **Y** driver socket, Y1-Motor connector | STEP 7, DIR 6 |
 | Driver enable | shared | 8 |
-| OLED SDA | **Z socket, DIR hole** | 4 |
-| OLED SCL | **Z socket, STEP hole** | 5 |
-| OLED VCC / GND | Z socket VDD / GND holes | |
+| OLED SDA | **Expansion header, TXD1** | 17 |
+| OLED SCL | **Expansion header, RXD1** | 18 |
+| OLED VCC / GND | Expansion header VCC / GND (see note below) | |
 | Servo signal | **A socket, STEP hole** | 20 |
 | Servo 5V / GND | 5V / GND pins of any endstop header (X-, Y-, Z-, Door…) | |
 | SD card | TF slot (SPI mode over the SDMMC wiring) | SCK 13, MISO 12, MOSI 14, CS 21 |
 
-- **Only plug drivers into the X and Y sockets.** The Z and A sockets stay empty: their STEP/DIR holes are used as plain GPIOs for the OLED and servo. A driver plugged in there would fight the OLED and servo.
+- **Only plug drivers into the X and Y sockets.** The A socket's STEP hole is used as a plain GPIO for the servo, so a driver there would fight it. The Z socket is unused, so leave it empty as well.
+- The OLED uses the expansion header, which FluidNC sets up as UART1 (TXD1 = IO17, RXD1 = IO18). Mural doesn't use that UART, so the two pins act as I2C. If the header only has **5V**, check that your OLED module's SDA/SCL pull-ups go to its own 3.3V regulator, not to VCC. The ESP32-S3 pins aren't 5V tolerant. Most 0.91" modules are fine. If the header has 3.3V, use that.
 - Use plain male-female dupont wires into the socket holes. Socket layout follows the StepStick standard: the logic side has EN, MS1, MS2, MS3, RST, SLP, **STEP**, **DIR**, and the power side has VMOT, GND, 2B, 2A, 1A, 1B, **VDD**, **GND**. Check the silkscreen.
 - The servo pulls a few hundred mA when it stalls. If the board resets when the pen moves, power the servo from the PD trigger output through a small 5V buck instead of the endstop 5V pin.
 - All pins live in [`include/board.h`](include/board.h). Run the `pinfinder` env (below) if anything doesn't respond.
@@ -57,11 +58,15 @@ pio device monitor -e dlc32max       # 9600 baud
 
 The board ships with MKS laser firmware. Flashing this replaces it. The USB port goes through a CH340, so install its driver if your OS doesn't have one. The board needs 12–24V connected even for flashing, because USB alone doesn't power it. If the upload can't connect, hold **BOOT**, tap **RESET**, release BOOT, and retry.
 
+Before the first build, run `npm install --ignore-scripts` in `worker/` (and `npm install` in `ui/` if it has no `node_modules`). `--ignore-scripts` skips building the `canvas` native module, which fails on newer Node versions. The worker bundle doesn't use canvas (it's a webpack external). Without the worker installed, `uploadfs` still succeeds but leaves the drawing worker out of the web UI.
+
+On first boot with a blank card the firmware formats it (about 10 s) and then starts the **Mural** WiFi access point at 192.168.4.1.
+
 `pio run -e dlc32max -t mergebin` produces a single 8MB `firmware-merged.bin` to flash at `0x0`.
 
 ### pinfinder
 
-`pio run -e pinfinder -t upload && pio device monitor -e pinfinder` cycles the GPIOs Mural uses (2, 4, 5, 19, 20 and the spare header pins), holding each high for 4 s and printing which one. Put a multimeter on a socket hole or header pin to confirm what's behind it. Reflash `dlc32max` afterwards.
+`pio run -e pinfinder -t upload && pio device monitor -e pinfinder` cycles the GPIOs Mural uses (2, 4, 5, 17, 18, 19, 20 and the spare header pins), holding each high for 4 s and printing which one. Put a multimeter on a socket hole or header pin to confirm what's behind it. Reflash `dlc32max` afterwards.
 
 ## Printed parts
 

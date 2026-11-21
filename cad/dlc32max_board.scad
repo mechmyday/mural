@@ -10,7 +10,7 @@ DRIVER_H = 21;   // socket (8.5) + StepStick PCB (1.6) + heatsink (~10) + margin
 
 // [x0, y0, x1, y1, height, name]
 PARTS = [
-    // TMC2209 modules in the X and Y sockets (Z and A sockets stay empty)
+    // TMC2209 modules in the X and Y sockets (Z and A sockets stay empty; A holds the servo dupont)
     [ 8.5, 40.4, 21.3, 62.0, DRIVER_H, "X driver"],
     [24.6, 40.4, 37.4, 62.0, DRIVER_H, "Y driver"],
     // Empty Z / A sockets with dupont plugs for the OLED and servo

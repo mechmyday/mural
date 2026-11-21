@@ -19,9 +19,10 @@ constexpr int SD_MISO_PIN = 12;
 constexpr int SD_MOSI_PIN = 14;
 constexpr int SD_CS_PIN = 21;
 
-// The Z and A driver sockets stay empty, so their STEP/DIR holes are plain GPIOs with
-// VDD (3.3V logic) and GND holes in the same socket. Never plug a driver into Z or A.
-//   Z socket: STEP = IO5, DIR = IO4      A socket: STEP = IO20, DIR = IO19
+// The A driver socket stays empty, so its STEP/DIR holes are plain GPIOs with VDD (3.3V logic)
+// and GND holes in the same socket. Never plug a driver into A.
+//   A socket: STEP = IO20, DIR = IO19
+// The Z socket is unused (STEP = IO5, DIR = IO4). Leave it empty too.
 // IO19/IO20 are the S3's native USB pins. They're free here because the board's USB port
 // goes through a CH340 on UART0 (ARDUINO_USB_CDC_ON_BOOT=0).
 
@@ -30,12 +31,13 @@ constexpr int SD_CS_PIN = 21;
 #define SERVO_PIN 20
 #endif
 
-// 0.91" SSD1306 OLED on the Z socket: SDA -> DIR hole, SCL -> STEP hole, VCC -> VDD, GND -> GND.
+// 0.91" SSD1306 OLED on the expansion header (FluidNC calls it uart1): SDA -> TXD1 (IO17),
+// SCL -> RXD1 (IO18). The UART isn't used, so both are plain GPIOs here.
 #ifndef OLED_SDA_PIN
-#define OLED_SDA_PIN 4
+#define OLED_SDA_PIN 17
 #endif
 #ifndef OLED_SCL_PIN
-#define OLED_SCL_PIN 5
+#define OLED_SCL_PIN 18
 #endif
 
 #endif
