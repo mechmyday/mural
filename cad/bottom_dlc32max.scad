@@ -3,6 +3,7 @@
 // - Old board bosses, ribs and side block removed, old holes filled.
 // - New heat-set boss pattern 92 x 62 mm for the DLC32 MAX.
 // - Cover screw bosses moved to the stretched post positions.
+// - Each board boss tied to its nearest cover boss with a low rib.
 // - The block the cover tongue screws into is raised by RAISE_LID.
 
 include <params.scad>
@@ -30,12 +31,28 @@ module boss(x, z, d) {
     translate([x, PLATE_TOP - 0.01, z]) rotate([-90, 0, 0]) cylinder(d = d, h = STANDOFF + 0.01);
 }
 
+// Rib joining two bosses, lower than the standoff so it stays clear of solder joints under the PCB.
+RIB_W = 5;
+RIB_H = STANDOFF - 1;
+module rib_dot(h) translate([h[0], PLATE_TOP - 0.01, h[1]]) rotate([-90, 0, 0]) cylinder(d = RIB_W, h = RIB_H + 0.01);
+// path = list of [x, z] points; one straight rib per segment
+module rib(path) for (i = [0 : len(path) - 2]) hull() { rib_dot(path[i]); rib_dot(path[i + 1]); }
+
 module insert_hole(x, z) {
     translate([x, PLATE_BACK - 1, z]) rotate([-90, 0, 0]) cylinder(d = INSERT_D, h = 30);
 }
 
 board_holes = [for (sx = [-1, 1], sz = [-1, 1]) [sx * BOARD_HOLE_DX / 2, BOARD_ZC + sz * BOARD_HOLE_DZ / 2]];
 post_holes  = [for (sx = [-1, 1], p = POSTS) [sx * p[0], p[1]]];
+
+// Each board hole tied to its nearest cover post. The lower ribs detour inward through RIB_BENDS
+// and meet the post from the side, staying clear of the cover's ledge, which reaches the plate
+// at |x| > 41.4, z -7..-5.5.
+RIB_BENDS = [[36, -2], [36, POSTS[0][1]]];
+ribs = [for (sx = [-1, 1]) each [
+    [[sx * BOARD_HOLE_DX / 2, BOARD_ZC - BOARD_HOLE_DZ / 2], each [for (b = RIB_BENDS) [sx * b[0], b[1]]], [sx * POSTS[0][0], POSTS[0][1]]],
+    [[sx * BOARD_HOLE_DX / 2, BOARD_ZC + BOARD_HOLE_DZ / 2], [sx * POSTS[1][0], POSTS[1][1]]],
+]];
 
 // Box around the block under the cover tongue (insert at x 0, z -26.5, guide lip above y 15.2)
 TONGUE_LO = [-21, 5, -40];
@@ -53,6 +70,7 @@ module bottom_dlc32max() {
                 }
             for (h = board_holes) boss(h[0], h[1], 7);
             for (h = post_holes) boss(h[0], h[1], 7);
+            for (r = ribs) rib(r);
         }
         for (h = concat(board_holes, post_holes)) insert_hole(h[0], h[1]);
     }

@@ -69,7 +69,7 @@ Print the two remixed parts from [`STLs/dlc32max/`](STLs/dlc32max/). Print every
 
 | Part | Change |
 |---|---|
-| `bottom_dlc32max.stl` | Board plate widened to 110 mm and lengthened 6 mm. Old bosses and ribs removed. New heat-set bosses on the 92 × 62 board pattern. Upper cover bosses moved out. The block the cover tongue screws into is raised 8 mm. |
+| `bottom_dlc32max.stl` | Board plate widened to 110 mm and lengthened 6 mm. Old bosses and ribs removed. New heat-set bosses on the 92 × 62 board pattern, each tied to the nearest cover boss with a 2 mm rib. Upper cover bosses moved out. The block the cover tongue screws into is raised 8 mm. |
 | `cover_dlc32max.stl` | 16 mm wider and 6 mm taller above the lower corners. Middle band of the lid raised 8 mm, with the outer bands kept at stock height so the belts can't rub. Old side block removed. Notches in the top wall for the DC jack, SD card and USB. OLED window, screen-holder bosses and PD-trigger pocket kept. |
 
 Both are oriented for printing: bottom on its back plate, cover lid-down. Use the same settings as the stock parts. Hardware is the same as stock: M3 heat-set inserts (M3x4x5) in all eight bosses of the board area, and M3 screws.

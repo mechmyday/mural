@@ -3,7 +3,7 @@ All parts can be found on Amazon, AliExpress, Ebay etc.
 
 | Part | Reference Photo | Qty | Notes |
 |---|---|---|---|
-| MKS DLC32 MAX controller board | | 1 | See [DLC32-MAX.md](DLC32-MAX.md) for wiring and setup |
+| MKS DLC32 MAX controller board | ![dlc32max](/images/mks-dlc32-max-header-2.jpg) | 1 | See [DLC32-MAX.md](DLC32-MAX.md) for wiring and setup |
 | TMC2209 StepStick driver module (with heatsink) | | 2 | X and Y sockets only, standalone mode |
 | 2.1 x 5.5 mm DC barrel plug pigtail | | 1 | From the PD trigger to the board's DC jack |
 | Micro SD Card 32GB | ![microsd](/docs/images/bom/microsd-32gb.webp) | 1 | |
