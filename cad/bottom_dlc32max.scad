@@ -54,14 +54,17 @@ ribs = [for (sx = [-1, 1]) each [
     [[sx * BOARD_HOLE_DX / 2, BOARD_ZC + BOARD_HOLE_DZ / 2], [sx * POSTS[1][0], POSTS[1][1]]],
 ]];
 
-// Box around the block under the cover tongue (insert at x 0, z -26.5, guide lip above y 15.2)
-TONGUE_LO = [-21, 5, -40];
-TONGUE_HI = [21, 30, -22];
+// Box around the block under the cover tongue (insert at x 0, z -26.5, guide lip above y 15.2).
+// TONGUE_RAISE = 0 keeps the block stock (cover tongue left at stock height).
+TONGUE_RAISE = 0;
+TONGUE_HALF_W = 21;
+TONGUE_LO = [-TONGUE_HALF_W, 5, -40];
+TONGUE_HI = [TONGUE_HALF_W, 30, -22];
 
 module bottom_dlc32max() {
     difference() {
         union() {
-            stretch_y_local(12, RAISE_LID, TONGUE_LO, TONGUE_HI)
+            stretch_y_local(12, TONGUE_RAISE, TONGUE_LO, TONGUE_HI)
                 difference() {
                     union() { stock_bottom(); plate_slab(); }
                     // remove everything standing on the plate in the board area

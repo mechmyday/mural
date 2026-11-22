@@ -20,11 +20,12 @@ PARTS = [
     [ 8.0, 62.6, 34.0, 70.0, 7 + 6, "X/Y1 motor plugs"],
     [34.0, 62.6, 73.0, 70.0, 7, "Y2/Z/A motor headers"],
     [73.0, 62.6, 92.0, 70.0, 8, "AIR/BEEPER"],
-    // Bottom edge: DC jack, RJ11, SD, USB (SD and USB stick out ~2 mm)
+    // Bottom edge, left to right: DC jack, USB, SD, RJ11 (checked on the real board; the USB and
+    // RJ11 positions are approximate). SD and USB stick out ~2 mm.
     [15.2,  0.0, 25.3, 14.0, 11, "DC jack"],
-    [29.3, -0.5, 42.0, 15.0, 16, "RJ11 display"],
+    [30.5, -2.0, 40.7, 12.0, 11, "USB (J19)"],
     [54.6, -2.0, 69.4, 14.0, 2.5, "SD slot"],
-    [79.9, -2.0, 90.1, 12.0, 11, "USB (J19)"],
+    [78.5, -0.5, 91.2, 15.0, 16, "RJ11 display"],
     // Big parts in the middle
     [80.4, 14.8, 99.2, 34.3, 3.5, "ESP32-S3 module"],
     [11.5, 27.0, 18.5, 34.5, 11, "C5"],
