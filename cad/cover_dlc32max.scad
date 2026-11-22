@@ -127,8 +127,7 @@ module cover_oled_moved() {
 TOP_WALL_Z = 72.9 + STRETCH_Z;
 NOTCHES = [
     // [x0, x1, y_top]
-    [-36.0, -23.5,  1.5],  // DC jack + plug
-    [-21.0,  -8.0,  1.5],  // USB
+    [-36.0,  -8.0,  1.5],  // DC jack + USB, one opening (no thin wall between them)
     [  3.5,  20.5, -6.5],  // SD card
 ];
 
