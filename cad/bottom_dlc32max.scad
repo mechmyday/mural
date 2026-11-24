@@ -4,7 +4,7 @@
 // - New heat-set boss pattern 92 x 62 mm for the DLC32 MAX.
 // - Cover screw bosses moved to the stretched post positions.
 // - Each board boss tied to its nearest cover boss with a low rib.
-// - The block the cover tongue screws into is raised by RAISE_LID.
+// - The block the cover tongue screws into stays stock (TONGUE_RAISE = 0).
 
 include <params.scad>
 use <lib/stretch.scad>
