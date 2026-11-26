@@ -36,7 +36,7 @@ Pin source: [MKS DLC32 MAX V1.0_002 PIN.pdf](https://github.com/makerbase-mks/MK
 
 ### Power
 
-Keep the stock USB-C PD trigger. Set it to **12V or 20V** and wire its output to a **2.1 × 5.5 mm barrel plug** (center positive). The plug goes through the notch in the top wall of the cover into the board's DC jack.
+Keep the stock USB-C PD trigger. Set it to **20V** and wire its output to a **2.1 × 5.5 mm barrel plug** (center positive). The plug goes through the notch in the top wall of the cover into the board's DC jack.
 
 ## Driver setup (standalone TMC2209)
 
@@ -56,7 +56,7 @@ pio run -e dlc32max -t uploadfs      # web UI to LittleFS
 pio device monitor -e dlc32max       # 9600 baud
 ```
 
-The board ships with MKS laser firmware. Flashing this replaces it. The USB port goes through a CH340, so install its driver if your OS doesn't have one. The board needs 12–24V connected even for flashing, because USB alone doesn't power it. If the upload can't connect, hold **BOOT**, tap **RESET**, release BOOT, and retry.
+Flashing the board wipes the default  MKS laser firmware. The USB port goes through a CH340, so install its driver if your OS (Windows or MacOS) doesn't have it. The board needs 12–24V connected even for flashing, because USB alone doesn't power it.
 
 Before the first build, run `npm install --ignore-scripts` in `worker/` (and `npm install` in `ui/` if it has no `node_modules`). `--ignore-scripts` skips building the `canvas` native module, which fails on newer Node versions. The worker bundle doesn't use canvas (it's a webpack external). Without the worker installed, `uploadfs` still succeeds but leaves the drawing worker out of the web UI.
 
@@ -66,6 +66,7 @@ On first boot with a blank card the firmware formats it (about 10 s) and then st
 
 ### pinfinder
 
+This is a simple diagnostic tool to find out which pins are mapped on the board.  The [FluidNC Wiki](http://wiki.fluidnc.com/en/hardware/3rd-party/MKS-DCL32-MAX) does not contain a complete pinout, so you can use this tool to check which pins map to the ESP32.
 `pio run -e pinfinder -t upload && pio device monitor -e pinfinder` cycles the GPIOs Mural uses (2, 4, 5, 17, 18, 19, 20 and the spare header pins), holding each high for 4 s and printing which one. Put a multimeter on a socket hole or header pin to confirm what's behind it. Reflash `dlc32max` afterwards.
 
 ## Printed parts
@@ -77,7 +78,7 @@ Print the two remixed parts from [`STLs/dlc32max/`](STLs/dlc32max/). Print every
 | `bottom_dlc32max.stl` | Board plate widened to 110 mm and lengthened 6 mm. Old bosses and ribs removed. New heat-set bosses on the 92 × 62 board pattern, each tied to the nearest cover boss with a 2 mm rib. Upper cover bosses moved out. The center block (cover tongue and motor carrier inserts) is stock height, so the stock motor carriers fit. |
 | `cover_dlc32max.stl` | 16 mm wider and 6 mm taller above the lower corners. Middle band of the lid raised 8 mm, with the outer bands kept at stock height so the belts can't rub. The screw tongue stays at stock height, with a step up to the raised lid. Old side block removed. One opening in the top wall for the DC jack and USB, plus a notch for the SD card (no RJ11 opening). OLED window and screen-holder bosses moved 21 mm toward the PD-trigger pocket so the OLED header clears the driver heatsinks. Motor-cable notches at the motor end moved 5 mm inward, 4 mm wider (10 mm) and 2.5 mm deeper. PD-trigger pocket kept. |
 
-Both are oriented for printing: bottom on its back plate, cover lid-down. Use the same settings as the stock parts. The cover's screw tongue sits 8 mm above the bed in that orientation, so enable supports ("touching build plate" is enough). Hardware is the same as stock: M3 heat-set inserts (M3x4x5) in all eight bosses of the board area, and M3 screws.
+Both are oriented for printing: bottom on its back plate, cover lid-down. Use the same settings as the stock parts. The cover's screw tongue sits 8 mm above the bed in that orientation, so enable supports ("touching build plate" or paint-on supports are enough). Hardware is the same as stock: M3 heat-set inserts (M3x4x5) in all eight bosses of the board area, and M3 screws.
 
 **Height budget above the top of the board PCB.** Check your driver + heatsink height against these:
 
@@ -94,8 +95,4 @@ The remix is OpenSCAD in [`cad/`](cad/). It imports the stock meshes (`cad/src/`
 - `cad/print_*.scad`: print orientation. Export with `openscad -o out.stl cad/print_cover.scad`.
 - `cad/lib/stretch.scad`: the mesh stretch helpers.
 
-## Things to re-check after the build
 
-- **Weight / balance:** the bigger board and cover move the center of mass a little. If drawings come out distorted, weigh the bot and update `mass_bot`, and maybe `axesToCenterOfMass`, in `src/movement.h`.
-- **Motor direction:** if a motor runs backwards, flip its connector or toggle `setPinsInverted` in `src/movement.cpp`. If left and right are swapped, swap the X and Y1 motor plugs.
-- The pin map comes from the MKS PDFs. I haven't tested it on real hardware yet.
