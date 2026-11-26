@@ -4,7 +4,7 @@
 #include "AccelStepper.h"
 #include "Arduino.h"
 #include "display.h"
-#include "TMCStepper.h"
+#include "board.h"
 #include "Preferences.h"
 
 // Motor driver parameters.
@@ -12,7 +12,7 @@ constexpr int printSpeedSteps = 650;
 constexpr int  moveSpeedSteps = 2000;
 constexpr long INFINITE_STEPS = 999999999;
 constexpr long acceleration = 999999999;  // Essentially infinite, causing instant stop / start
-constexpr int stepsPerRotation = 200 * 8; // 1/8 microstepping
+constexpr int stepsPerRotation = 200 * 8; // 1/8 microstepping, set by the DIP switches under each driver (all OFF)
 
 // Geometry parameters:
 // Effective diameter of the pulley+belts. Settable from the UI (see Movement::setPulleyDiameter);
@@ -40,17 +40,7 @@ constexpr double safeXFraction = 0.2;           // Left and right margin: from d
 // Variables used for debugging:
 // constexpr int sleepDurationAfterMove_ms = 0;    // Delay after linear movement [ms], e.g. 50.
 
-constexpr int LEFT_STEP_PIN = 14;
-constexpr int LEFT_DIR_PIN = 12;
-constexpr int LEFT_UART_ADDR = 0;
-constexpr int LEFT_DIAG_PIN = 36;
-
-constexpr int RIGHT_STEP_PIN = 25;
-constexpr int RIGHT_DIR_PIN = 26;
-constexpr int RIGHT_UART_ADDR = 1;
-constexpr int RIGHT_DIAG_PIN = 39;
-
-constexpr int MOTOR_ENABLE_PIN = 13;
+// Stepper pins live in include/board.h.
 
 class Movement{
 private:
@@ -75,9 +65,6 @@ private:
     bool startedHoming;
     AccelStepper *leftMotor;
     AccelStepper *rightMotor;
-    HardwareSerial *tmcSerial;
-    TMC2209Stepper *leftDriver;
-    TMC2209Stepper *rightDriver;
     Display *display;
     void setOrigin();
 

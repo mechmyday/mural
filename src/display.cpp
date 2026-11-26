@@ -1,18 +1,31 @@
 #include "display.h"
 #include <Adafruit_SSD1306.h>
+#include "board.h"
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 32
 #define TEXT_HEIGHT 8
 
 Display::Display() {
-    auto i2c_valid = Wire.begin(15, 4);
-    Serial.printf("I2C changed OK to pins 15 and 4: %d\n", i2c_valid);
-    display = new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-    if (!display->begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-        Serial.println(F("SSD1306 allocation failed"));
-        throw std::invalid_argument("not ready");
+    auto i2c_valid = Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
+    Serial.printf("I2C on SDA %d / SCL %d: %d\n", OLED_SDA_PIN, OLED_SCL_PIN, i2c_valid);
+    // The Adafruit begin() doesn't check for an ACK, so probe the bus first.
+    uint8_t addr = 0;
+    for (uint8_t a = 1; a < 127; a++) {
+        Wire.beginTransmission(a);
+        if (Wire.endTransmission() == 0) {
+            Serial.printf("I2C device at 0x%02X\n", a);
+            if (!addr && (a == 0x3C || a == 0x3D)) addr = a;
+        }
     }
+    display = new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+    if (!addr || !display->begin(SSD1306_SWITCHCAPVCC, addr)) {
+        // Keep running without a screen rather than halting the bot.
+        Serial.println(F("SSD1306 not found, continuing without display"));
+        ready = false;
+        return;
+    }
+    ready = true;
     display->setRotation(0);
     display->clearDisplay();
     display->setTextColor(WHITE);
@@ -21,6 +34,7 @@ Display::Display() {
 }
 
 void Display::drawLines(String lines[], int n) {
+    if (!ready) return;
     display->clearDisplay();
     int16_t x1, y1;
     uint16_t w, h;
@@ -82,7 +96,8 @@ void Display::showFormatting() {
 }
 
 void Display::showDrawing(int progress) {
-   display->clearDisplay();
+    if (!ready) return;
+    display->clearDisplay();
 
     const int x = 8;
     const int y = 8;

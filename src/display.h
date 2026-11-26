@@ -5,6 +5,7 @@
 class Display {
     private:
     Adafruit_SSD1306 *display;
+    bool ready = false;
     String ip;
     void drawLines(String lines[], int n);
     public:
