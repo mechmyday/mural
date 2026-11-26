@@ -56,7 +56,7 @@ pio run -e dlc32max -t uploadfs      # web UI to LittleFS
 pio device monitor -e dlc32max       # 9600 baud
 ```
 
-Flashing the board wipes the default  MKS laser firmware. The USB port goes through a CH340, so install its driver if your OS (Windows or MacOS) doesn't have it. The board needs 12–24V connected even for flashing, because USB alone doesn't power it.
+Flashing the board wipes the default MKS laser firmware. The USB port goes through a CH340, so install its driver if your OS (Windows or MacOS) doesn't have it. The board needs 12–24V connected even for flashing, because USB alone doesn't power it.
 
 Before the first build, run `npm install --ignore-scripts` in `worker/` (and `npm install` in `ui/` if it has no `node_modules`). `--ignore-scripts` skips building the `canvas` native module, which fails on newer Node versions. The worker bundle doesn't use canvas (it's a webpack external). Without the worker installed, `uploadfs` still succeeds but leaves the drawing worker out of the web UI.
 
